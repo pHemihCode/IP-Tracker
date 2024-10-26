@@ -2,20 +2,21 @@ import React, { useState, useEffect } from "react";
 import arrow from "../src/assets/images/icon-arrow.svg";
 import axios from "axios";
 import Map from "./Map";
+import Loader from "./Loader";
 
-
-type dataDetailsType={
-  IPv4:string,
-  city:string,
-  state:string,
-  country_name:string,
-  latitude:number,
-  longitude:number
-}
+type dataDetailsType = {
+  IPv4: string;
+  city: string;
+  state: string;
+  country_name: string;
+  latitude: number;
+  longitude: number;
+};
 
 const App = () => {
   const [data, setData] = useState<dataDetailsType>();
   const [theIP, setTheIP] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   // This function fetches the data from the API
   const getLocation = async () => {
@@ -24,13 +25,14 @@ const App = () => {
         `https://geolocation-db.com/json/${theIP}`
       );
       const locationDetails = response.data;
-      console.log(locationDetails);
       setData(locationDetails);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
   const handleSearch = () => {
+    setLoading(true);
     getLocation();
   };
   useEffect(() => {
@@ -99,16 +101,20 @@ const App = () => {
           </div>
         </div>
       </div>
-      <div className="h-[50vh] md:h-[75vh] relative z-0">
-        <Map
-          lat={data ? data.latitude : 48.8584}
-          long={data ? data.longitude : 2.2945}
-          location={
-            data
-              ? `${data.city + "," + data.state + "," + data.country_name}`
-              : "Eiffel Tower, Paris, France"
-          }
-        />
+      <div className={`h-[50vh] md:h-[75vh] relative ${!loading && "z-0"}`}>
+        {loading ? (
+          <Loader />
+        ) : (
+          <Map
+            lat={data ? data.latitude : 48.8584}
+            long={data ? data.longitude : 2.2945}
+            location={
+              data
+                ? `${data.city + "," + data.state + "," + data.country_name}`
+                : "Eiffel Tower, Paris, France"
+            }
+          />
+        )}
       </div>
     </div>
   );
