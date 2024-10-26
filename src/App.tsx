@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import arrow from "../src/assets/images/icon-arrow.svg";
+import arrow from "/images/icon-arrow.svg";
 import axios from "axios";
 import Map from "./Map";
 import Loader from "./Loader";
